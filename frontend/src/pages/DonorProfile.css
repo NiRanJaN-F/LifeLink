@@ -1,0 +1,169 @@
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+.donor-profile-container {
+  min-height: 100vh;
+  padding: 45px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: #f7f8fc;
+  color: #25283a;
+  font-family: "DM Sans", sans-serif;
+}
+
+.donor-profile-card {
+  width: 100%;
+  max-width: 650px;
+  padding: 35px;
+  background: white;
+  border: 1px solid #eceef3;
+  border-radius: 17px;
+  box-shadow: 0 8px 30px rgba(30, 35, 55, 0.07);
+}
+
+.donor-profile-card h1 {
+  margin: 0 0 10px;
+  font-size: 30px;
+  font-weight: 800;
+  color: #25283a;
+}
+
+.donor-profile-card > p {
+  margin-bottom: 28px;
+  color: #858b9d;
+  font-size: 14px;
+}
+
+.donor-profile-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.donor-profile-card form > label {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #343849;
+}
+
+.donor-profile-card input:not([type="checkbox"]),
+.donor-profile-card select {
+  width: 100%;
+  height: 48px;
+  padding: 0 13px;
+  border: 1px solid #e3e5ec;
+  border-radius: 9px;
+  outline: none;
+  background: white;
+  color: #343849;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.donor-profile-card input:focus,
+.donor-profile-card select:focus {
+  border-color: #e72d49;
+  box-shadow: 0 0 0 3px rgba(231, 45, 73, 0.08);
+}
+
+.availability-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+  padding: 16px;
+  background: #f8f9fc;
+  border: 1px solid #eceef3;
+  border-radius: 10px;
+}
+
+.availability-option input {
+  width: 17px;
+  height: 17px;
+  accent-color: #e72d49;
+}
+
+.availability-option label {
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.donor-profile-card form button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(110deg, #f23b54, #d91c3b);
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.donor-profile-card form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(220, 35, 64, 0.17);
+}
+
+.donor-profile-card form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.message {
+  padding: 13px;
+  margin-bottom: 18px;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.message.success {
+  background: #eafaf2;
+  color: #13865d;
+}
+
+.message.error {
+  background: #fff0f2;
+  color: #d91c3b;
+}
+
+.donor-profile-card .back-button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 13px;
+  border: 1px solid #e3e5ec;
+  border-radius: 9px;
+  background: white;
+  color: #555c70;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.donor-profile-card .back-button:hover {
+  background: #f7f8fc;
+}
+
+@media (max-width: 600px) {
+  .donor-profile-container {
+    padding: 25px 14px;
+  }
+
+  .donor-profile-card {
+    padding: 22px;
+  }
+
+  .donor-profile-card h1 {
+    font-size: 25px;
+  }
+}
