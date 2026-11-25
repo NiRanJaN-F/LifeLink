@@ -18,26 +18,34 @@ const app = express();
 
 app.use(helmet());
 
-const clientOrigins = [
-  process.env.CLIENT_URL,
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "http://127.0.0.1:5173",
-  "http://127.0.0.1:5174",
-].filter(Boolean);
+// CORS CONFIGURATION
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const clientOrigins = isProduction
+  ? [process.env.CLIENT_URL].filter(Boolean)
+  : [
+      process.env.CLIENT_URL,
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:5174",
+    ].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, automated tests)
-      if (
-        !origin ||
-        clientOrigins.includes(origin) ||
-        /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
-      ) {
+      // Allow requests without an Origin header
+      if (!origin) {
         return callback(null, true);
       }
-      return callback(null, true);
+
+      // Allow only configured frontend origins
+      if (clientOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   })
