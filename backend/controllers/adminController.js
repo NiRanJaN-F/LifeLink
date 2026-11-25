@@ -95,26 +95,28 @@ export const getDonorsList = async (req, res) => {
 
 // VERIFY OR REJECT A DONOR PROFILE
 export const verifyDonor = async (req, res) => {
-  const connection = await db.getConnection();
+  const donorId = Number(req.params.id);
+  const { status } = req.body;
+
+  if (!donorId || isNaN(donorId)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid donor ID.",
+    });
+  }
+
+  if (!["verified", "rejected"].includes(status)) {
+    return res.status(400).json({
+      success: false,
+      message: "Status must be either 'verified' or 'rejected'.",
+    });
+  }
+
+  let connection;
+  let inTransaction = false;
+
   try {
-    const donorId = Number(req.params.id);
-    const { status } = req.body;
-
-    if (!donorId || isNaN(donorId)) {
-      connection.release();
-      return res.status(400).json({
-        success: false,
-        message: "Invalid donor ID.",
-      });
-    }
-
-    if (!["verified", "rejected"].includes(status)) {
-      connection.release();
-      return res.status(400).json({
-        success: false,
-        message: "Status must be either 'verified' or 'rejected'.",
-      });
-    }
+    connection = await db.getConnection();
 
     // Check donor existence
     const [donors] = await connection.execute(
@@ -126,7 +128,6 @@ export const verifyDonor = async (req, res) => {
     );
 
     if (donors.length === 0) {
-      connection.release();
       return res.status(404).json({
         success: false,
         message: "Donor profile not found.",
@@ -137,6 +138,7 @@ export const verifyDonor = async (req, res) => {
 
     // Transaction for status update and notification
     await connection.beginTransaction();
+    inTransaction = true;
 
     await connection.execute(
       "UPDATE donors SET verification_status = ? WHERE donor_id = ?",
@@ -155,7 +157,7 @@ export const verifyDonor = async (req, res) => {
     );
 
     await connection.commit();
-    connection.release();
+    inTransaction = false;
 
     return res.status(200).json({
       success: true,
@@ -163,12 +165,22 @@ export const verifyDonor = async (req, res) => {
       verification_status: status,
     });
   } catch (error) {
-    await connection.rollback();
-    connection.release();
+    if (connection && inTransaction) {
+      try {
+        await connection.rollback();
+      } catch (rbErr) {
+        console.error("Rollback error:", rbErr);
+      }
+    }
     console.error("Verify donor error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while updating donor verification status.",
     });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
+
